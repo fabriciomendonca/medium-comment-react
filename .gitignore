@@ -2,4 +2,3 @@ node_modules
 npn-debug.log
 .vscode
 .DS_Store
-dist
