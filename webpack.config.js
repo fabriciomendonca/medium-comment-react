@@ -14,7 +14,11 @@ const PATHS = {
 const VENDORS = ['react', 'react-dom', 'redux', 'redux-thunk', 'react-redux', 'react-router', 'react-router-dom', 'axios'];
 const config = {
   entry: {
-    bundle: path.join(PATHS.src, '/index.js'),
+    bundle: [
+      'webpack/hot/only-dev-server',
+      'babel-polyfill',
+      path.join(PATHS.src, '/index.js')
+    ],
     vendor: VENDORS
   },
 
@@ -23,14 +27,14 @@ const config = {
   },
 
   output: {
-    filename: 'public/scripts/[name].[chunkhash].js',
+    filename: 'public/scripts/[name].[hash].js',
     path: PATHS.dist,
     publicPath: '/'
   },
 
   devServer: {
     port: 3000,
-    inline: true,
+    hot: true,
     historyApiFallback: true,
     publicPath: '/'
   },
@@ -67,7 +71,9 @@ const config = {
 
     new webpack.optimize.CommonsChunkPlugin({
       name: ['vendor', 'manifest']
-    })
+    }),
+
+    new webpack.HotModuleReplacementPlugin()
   ]
 }
 

@@ -14,6 +14,7 @@ import {
 import rootReducer from './reducers/index';
 
 import Home from './views/home';
+import Post from './views/post';
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
 
@@ -28,6 +29,7 @@ class App extends React.Component {
         <Router>
           <div className="app">
             <Switch>
+              <Route path="/posts/:id" component={Post}></Route>
               <Route path="/" component={Home}></Route>
             </Switch>
           </div>
