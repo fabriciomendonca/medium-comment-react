@@ -11,7 +11,7 @@ const PATHS = {
   fonts: path.join(__dirname, '/assets/fonts')
 };
 
-const VENDORS = ['react', 'axios'];
+const VENDORS = ['react', 'react-dom', 'redux', 'redux-thunk', 'react-redux', 'react-router', 'react-router-dom', 'axios'];
 const config = {
   entry: {
     bundle: path.join(PATHS.src, '/index.js'),
@@ -23,7 +23,7 @@ const config = {
   },
 
   output: {
-    filename: '[name].js',
+    filename: 'public/scripts/[name].[chunkhash].js',
     path: PATHS.dist,
     publicPath: '/'
   },
@@ -49,12 +49,12 @@ const config = {
       },
       {
         test:/\.(woff|woff2|svg)$/,
-        use: 'url-loader?limit=24000&publicPath=/&outputPath=/assets/fonts/&name=[name].[ext]',
+        use: 'url-loader?limit=24000&publicPath=/&outputPath=/public/assets/fonts/&name=[name].[ext]',
         include: PATHS.fonts
       },
       {
         test:/\.(jpg|gif|png)$/i,
-        use: 'url-loader?limit=24000&publicPath=/&outputPath=/assets/img/&name=[name].[ext]',
+        use: 'url-loader?limit=24000&publicPath=/&outputPath=/public/assets/img/&name=[name].[ext]',
         include: PATHS.img
       }
     ]
@@ -66,8 +66,7 @@ const config = {
     }),
 
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      filename: 'vendor.js'
+      name: ['vendor', 'manifest']
     })
   ]
 }
