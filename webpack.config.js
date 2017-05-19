@@ -52,13 +52,13 @@ const config = {
         include: PATHS.scss
       },
       {
-        test:/\.(woff|woff2|svg)$/,
-        use: 'url-loader?limit=24000&publicPath=/&outputPath=/public/assets/fonts/&name=[name].[ext]',
+        test: /\.(woff|woff2|svg)$/,
+        use: 'url-loader?limit=24000&publicPath=/&outputPath=/public/fonts/&name=[name].[ext]',
         include: PATHS.fonts
       },
       {
-        test:/\.(jpg|gif|png)$/i,
-        use: 'url-loader?limit=24000&publicPath=/&outputPath=/public/assets/img/&name=[name].[ext]',
+        test: /\.(jpg|gif|png)$/i,
+        use: 'url-loader?limit=10000&publicPath=/&outputPath=/public/img/&name=[name].[ext]',
         include: PATHS.img
       }
     ]
