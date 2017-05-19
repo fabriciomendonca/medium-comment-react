@@ -107,8 +107,7 @@ export default class PostContent extends React.Component {
     });
 
     // Push the remaining text
-    arrHighlights.push(right);
-
+    arrHighlights.push(right || text);
     return arrHighlights;
   }
 
