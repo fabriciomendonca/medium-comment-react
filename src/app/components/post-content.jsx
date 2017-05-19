@@ -124,9 +124,12 @@ export default class PostContent extends React.Component {
     let prev = selection.anchorNode;
     let prevText = prev.textContent.slice(0, selection.focusOffset);
     prev = prev.previousSibling;
+    
+    if(!prev) return;
+    
     do {
       // Ignore comment nodes
-      if (prev.nodeType !== 8 ) {
+      if (prev.nodeType  && prev.nodeType !== 8 ) {
         prevText = prev.textContent + prevText;
       }
       
