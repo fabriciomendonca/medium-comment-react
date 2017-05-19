@@ -1,0 +1,6 @@
+.menu {
+  @include flex-row(start, center);
+  background: $petrol;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.37);
+  height: 50px;
+}

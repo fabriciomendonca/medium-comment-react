@@ -28,10 +28,13 @@ class App extends React.Component {
       <Provider store={store}>
         <Router>
           <div className="app">
-            <Switch>
-              <Route path="/posts/:id" component={Post}></Route>
-              <Route path="/" component={Home}></Route>
-            </Switch>
+            <div className="menu"></div>
+            <div className="content">
+              <Switch>
+                <Route path="/posts/:id" component={Post}></Route>
+                <Route path="/" component={Home}></Route>
+              </Switch>
+            </div>
           </div>
         </Router>
       </Provider>

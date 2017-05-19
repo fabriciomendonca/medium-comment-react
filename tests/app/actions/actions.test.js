@@ -15,15 +15,17 @@ import {
 } from '../../../src/app/actions/actions';
 
 describe('Test action creators', () => {
-  afterEach(() => {
-    
-  });
 
   it('should return a list of posts (fetchPosts)', async () => {
     const post = {
       _id: '123456',
       title: 'Test post',
-      text: 'Text of the test post'
+      text: 'Text of the test post',
+      comments: [
+        {
+          text: 'This is a test comment'
+        }
+      ]
     };
 
     axios.get = jest.fn((url) => {
@@ -49,7 +51,12 @@ describe('Test action creators', () => {
     const post = {
       _id: '123456',
       title: 'New post',
-      text: 'This is a new post'
+      text: 'This is a new post',
+      highlights: [{
+        text: 'is a new',
+        startIndex: 6,
+        endIndex: 13
+      }]
     };
 
     axios.get = jest.fn((url) => {
