@@ -1,0 +1,21 @@
+.home {
+  .posts {
+    .post {
+      margin: 16px 0;
+
+      h2 {
+        margin-bottom: 0;
+
+        a {
+          color: $turquoise;
+          text-decoration: none;
+
+          &:hover {
+            color: $petrol;
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+}
