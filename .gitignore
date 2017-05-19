@@ -1,5 +1,5 @@
 _helper
 node_modules
-npn-debug.log
+npm-debug.log
 .vscode
 .DS_Store

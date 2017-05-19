@@ -15,6 +15,14 @@ class Post extends React.Component {
     this.props.fetchPost(this.props.match.params.id);
   }
 
+  updateHighlight(highlight) {
+    this.props.updateHighlight(this.props.post, highlight);
+  }
+
+  saveHighlight (highlight) {
+    this.props.saveHighlight(this.props.post, highlight);
+  }
+
   render () {
     const { post } = this.props;
     if (!post) return (
@@ -25,7 +33,10 @@ class Post extends React.Component {
       <div className="post">
         <h2>{post.title}</h2>
         <div className="post-content">
-          <PostContent post={post} />
+          <PostContent 
+            post={post} 
+            saveHighlight={(highlight) => this.saveHighlight(highlight)}
+            updateHighlight={(highlight) => this.updateHighlight(highlight)} />
         </div>
       </div>
     );

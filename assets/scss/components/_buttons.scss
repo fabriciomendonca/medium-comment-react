@@ -1,0 +1,24 @@
+
+.btn {
+  display: inline-block;
+  font-size: 0.875rem;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 16px;
+
+  &.btn-raised {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.43);
+  }
+
+  &.btn-success {
+    background: $petrol;
+    color: white;
+    text-transform: uppercase;
+  }
+
+  &.btn-danger {
+    background: $cerise;
+    color: white;
+    text-transform: uppercase;
+  }
+}

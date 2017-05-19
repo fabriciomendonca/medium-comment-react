@@ -1,4 +1,6 @@
 import axios from 'axios';
+import httpAdapter from 'axios/lib/adapters/http';
+import nock from 'nock';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
@@ -7,11 +9,15 @@ const mockStore = configureMockStore(middleWares);
 
 import {
   FETCH_POSTS,
-  FETCH_POST
+  FETCH_POST,
+  SAVE_HIGHLIGHT,
+  UPDATE_HIGHLIGHT
 } from '../../../src/app/actions/types';
 import {
   fetchPosts,
-  fetchPost
+  fetchPost,
+  saveHighlight,
+  updateHighlight
 } from '../../../src/app/actions/actions';
 
 describe('Test action creators', () => {
@@ -72,6 +78,62 @@ describe('Test action creators', () => {
     expect(store.getActions()).toEqual([{
       type: FETCH_POST,
       payload: post
+    }]);
+  });
+
+  axios.defaults.adapter = httpAdapter;
+
+  it('should save a highlight', async () => {
+    const post = {
+      _id: '123456',
+      highlights: [{
+        text: 'is a new',
+        startIndex: 6,
+        endIndex: 13
+      }]
+    };
+    const highlight = {
+      text: 'high',
+      startIndex: 0,
+      endIndex: 4
+    };
+    nock('http://localhost:3050')
+      .post(`/posts/${post._id}/highlights`, highlight)
+      .reply(200, highlight);
+    
+    const store = mockStore({ highlight: {} });
+    await saveHighlight(post, highlight)(store.dispatch);
+
+    expect(store.getActions()).toEqual([{
+      type: SAVE_HIGHLIGHT,
+      payload: highlight
+    }]);
+  });
+
+  it('should update a highlight commentText', async () => {
+    const post = {
+      _id: '123456',
+      highlights: [{
+        text: 'is a new',
+        startIndex: 6,
+        endIndex: 13
+      }]
+    };
+    const highlight = {
+      text: 'high',
+      startIndex: 0,
+      endIndex: 4
+    };
+    nock('http://localhost:3050')
+      .patch(`/posts/${post._id}/highlights`, highlight)
+      .reply(200, highlight);
+    
+    const store = mockStore({ highlight: {} });
+    await updateHighlight(post, highlight)(store.dispatch);
+
+    expect(store.getActions()).toEqual([{
+      type: UPDATE_HIGHLIGHT,
+      payload: highlight
     }]);
   });
 });

@@ -36,5 +36,62 @@ describe('Test posts reducer', () => {
     expect(postsReducer([], action)).toEqual({
       selected: post
     });
-  })
+  });
+
+  it('it should handle SAVE_HIGHLIGHT', () => {
+    const highlight = {
+      _id: '2123312',
+      text: 'hi',
+      startIndex: 0,
+      endIndex: 1
+    };
+    
+    const post = {
+      _id: '123456',
+      title: 'Post title',
+      text: 'Post text',
+      highlights: []
+    };
+
+    const action = {
+      type: actionTypes.SAVE_HIGHLIGHT,
+      payload: highlight
+    };
+
+    expect(postsReducer({selected: post}, action)).toEqual({
+      selected: {
+        ...post,
+        highlights: [highlight]
+      }
+    });
+  });
+
+  it('it should handle UPDATE_HIGHLIGHT', () => {
+    const highlight = {
+      _id: '2123312',
+      text: 'hi',
+      startIndex: 0,
+      endIndex: 1,
+      commentText: 'new text'
+    };
+    
+    const post = {
+      _id: '123456',
+      title: 'Post title',
+      text: 'Post text',
+      highlights: []
+    };
+
+    const action = {
+      type: actionTypes.UPDATE_HIGHLIGHT,
+      payload: highlight
+    };
+
+    expect(postsReducer({selected: post}, action)).toEqual({
+      selected: {
+        ...post,
+        highlights: [highlight]
+      }
+    });
+  });
 });

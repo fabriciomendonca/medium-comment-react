@@ -1,6 +1,8 @@
 import {
   FETCH_POSTS,
-  FETCH_POST
+  FETCH_POST,
+  SAVE_HIGHLIGHT,
+  UPDATE_HIGHLIGHT
 } from '../actions/types';
 
 export default (state = [], action) => {
@@ -15,7 +17,32 @@ export default (state = [], action) => {
         ...state,
         selected: action.payload
       }
+    case SAVE_HIGHLIGHT:
+      return {
+        ...state,
+        selected: {
+          ...state.selected,
+          highlights: [
+            ...state.selected.highlights,
+            action.payload
+          ]
+        }
+      };
+    case UPDATE_HIGHLIGHT:
+      const highlights = state.selected.highlights.filter(item => {
+        return item._id !== action.payload._id;
+      });
+      return {
+        ...state,
+        selected: {
+          ...state.selected,
+          highlights: [
+            ...highlights,
+            action.payload
+          ]
+        }
+      };
   }
 
   return state;
-}
+};

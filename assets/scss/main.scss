@@ -8,11 +8,13 @@
 @import "utils/reset";
 @import "utils/typography";
 
+// Components
+@import "components/commentbox";
+@import "components/buttons";
+
 // Views
 @import "views/app";
 @import "views/content";
 @import "views/menu";
 @import "views/post";
 
-// Components
-@import "components/commentbox";

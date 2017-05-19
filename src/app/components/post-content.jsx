@@ -13,9 +13,11 @@ export default class PostContent extends React.Component {
 
     this.renderCommentBox = this.renderCommentBox.bind(this);
     this.removeCommentBox = this.removeCommentBox.bind(this);
+    this.saveHighlight = this.saveHighlight.bind(this);
+    this.cancelHighlight = this.cancelHighlight.bind(this);
   }
 
-  renderCommentBox (e) {
+  renderCommentBox (e, highlight) {
     const bounding = e.target.getBoundingClientRect();
     const posX = (bounding.left + (bounding.width / 2));
     const posY = bounding.bottom;
@@ -28,14 +30,51 @@ export default class PostContent extends React.Component {
 
     this.setState({
       ...this.state,
-      commentBox: <CommentBox style={style} onMouseOut={this.removeCommentBox} />
+      commentBox: <CommentBox style={style} onMouseOut={this.removeCommentBox} highlight={highlight} cancelHighlight={this.cancelHighlight} saveHighlight={this.saveHighlight} />
     });
   }
 
-  removeCommentBox () {
+  saveHighlight (highlight) {
+    if (highlight._id) {
+      this.props.updateHighlight(highlight);
+    } else {
+      this.props.saveHighlight(highlight);
+    }
+  }
+
+  cancelHighlight (highlight) {
+    if (highlight._id) {
+      this.removeCommentBox();
+    } else {
+      let highlights = this.state.post.highlights;
+
+      highlights = [
+        ...highlights.slice(0, highlights.indexOf(highlight)),
+        ...highlights.slice(highlights.indexOf(highlight) + 1)
+      ];
+
+      this.removeCommentBox(null, highlights);
+    }
+  }
+
+  removeCommentBox (e, highlights = null) {
+    const bounding = e ? e.target.getBoundingClientRect() : null;
+    const posX = bounding ? (bounding.left + (bounding.width / 2)) : 0;
+    const posY = bounding ? bounding.bottom : 0;
+    const style = {
+      position: 'absolute',
+      opacity: '0',
+      top: posY + 'px',
+      left: posX + 'px'
+    };
+
     this.setState({
       ...this.state,
-      commentBox: null
+      commentBox: <CommentBox style={style} />,
+      post: {
+        ...this.state.post,
+        highlights: highlights || this.state.post.highlights
+      }
     });
   }
 
@@ -64,7 +103,7 @@ export default class PostContent extends React.Component {
       
       offset += left.length + center.length;
       arrHighlights.push(left);
-      arrHighlights.push(<Highlight text={center} key={index} renderCommentBox={this.renderCommentBox} removeCommentBox={this.removeCommentBox} />);
+      arrHighlights.push(<Highlight text={center} key={index} highlight={highlight} renderCommentBox={this.renderCommentBox} removeCommentBox={(e) => this.removeCommentBox(e, highlight)} />);
     });
 
     // Push the remaining text
@@ -117,11 +156,11 @@ export default class PostContent extends React.Component {
 
   render () {
     return (
-      <div className="post-content" onMouseUp={(e) => this.onMouseUp(e)}>
-        <div>
+      <div className="post-content">
+        <div onMouseUp={(e) => this.onMouseUp(e)}>
           {this.renderPostText()}
-          {this.state.commentBox || ''}
         </div>
+        {this.state.commentBox || ''}
       </div>
     );
   } 

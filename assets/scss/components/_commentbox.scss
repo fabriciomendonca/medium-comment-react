@@ -1,42 +1,52 @@
 .comment-box {
-  background: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
   margin: 15px 0;
   opacity: 0;
-  padding: 8px;
-  transition: 300ms linear all;
-  z-index: 2;
-
-  &:before {
-    background: white;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-    content: '';
-    display: block;
-    height: 10px;
-    left: 0px;
-    position: absolute;
-    top: -5px;
-    transform: rotate(45deg);
-    width: 10px;
-    z-index: 1;
-  }
+  transition: 150ms linear all;
 
   textarea {
     border: 1px solid $petrol;
     font-size: 1rem;
     padding: 8px;
+    width: 100%;
   }
 
-  .user-info {
-    padding-bottom: 16px;
+  &:before {
+    background: white;
+    box-shadow: -1px -1px 4px rgba(0, 0, 0, 0.5);
+    content: '';
+    display: block;
+    height: 10px;
+    left: 2px;
+    position: absolute;
+    top: -5px;
+    transform: rotate(45deg);
+    width: 10px;
+    z-index: 98;
+  }
 
-    .avatar {
-      width: 30px;
-      height: 30px;
+  .box-content {
+    background: white;
+    padding: 8px;
+    position: relative;
+    z-index: 99;
 
-      img {
-        width: 100%;
+    .user-info {
+      padding-bottom: 16px;
+
+      .avatar {
+        width: 30px;
+        height: 30px;
+
+        img {
+          width: 100%;
+        }
       }
     }
+
+    .btn:first-of-type {
+      margin-right: 8px;
+    }
   }
+  
 }
