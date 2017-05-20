@@ -83,7 +83,7 @@ class CommentBox extends React.Component {
         <div className="box-content">
           <div className="user-info">
             <div className="avatar">
-              <img src="../../../assets/img/avatar-placeholder.png" alt=""/>
+              <img src="/public/img/avatar-placeholder.png" alt=""/>
             </div>
           </div>
           {show}

@@ -23,8 +23,8 @@ class Post extends React.Component {
     document.location.reload();
   }
 
-  saveHighlight (highlight) {
-    this.props.saveHighlight(this.props.post, highlight);
+  async saveHighlight (highlight) {
+    await this.props.saveHighlight(this.props.post, highlight);
 
     // Force reload to mount the text ranges
     // should be refactored
