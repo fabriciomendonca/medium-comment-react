@@ -2,23 +2,19 @@ import React from 'react';
 
 import PostText from './post-text';
 import Highlight from './highlight';
-import CommentBox from './comment-box';
+import CommentBox from '../containers/comment-box';
 import ActionsMenu from './actions-menu';
 
 export default class PostContent extends React.Component {
   constructor (props) {
     super(props);
 
-    this.initialPost = this.props.post;
+    
 
     this.state = {
       actionsStyle: {
         opacity: 0
-      },
-      commentBoxStyle: {
-        opacity: 0
-      },
-      ranges: this.props.ranges || []
+      }
     };
   }
 
@@ -30,6 +26,10 @@ export default class PostContent extends React.Component {
       }
     });
 
+    this.initialPost = {
+      ...this.props.post
+    };
+    
     this.renderSavedHighlights();
   }
 
@@ -42,31 +42,33 @@ export default class PostContent extends React.Component {
       return a.startOffset >= b.startOffset
     });
 
+    const elm = document.querySelector("#contentText");
+
     highlights.forEach(item => {
       let range = document.createRange();
-      const elm = this.refs.content.refs.contentText;
 
       let startNode,
-          startOffset,
+          startOffset = item.startOffset,
           endNode,
           endOffset,
-          total = item.endOffset - item.startOffset + 1;
+          total = item.endOffset - item.startOffset;
+      
       const traverseNodes = (node, offset) => {
         if (node.nodeType === 3) {
-          const start = item.startOffset - node.length;
+          const start = startOffset - node.length;
           const sub = total - node.length;
 
           // Found the start node
           if (start < 0 && !startNode) {
             startNode = node;
-            startOffset = node.length - (Math.abs(start));
+            //startOffset = item.startOffset;//node.length - (Math.abs(start));
             total -= Math.abs(start);
 
             if (total < 0) {
               endNode = node;
               endOffset = node.length - Math.abs(total);
+              throw {};
             }
-
           } else if (startNode) {
 
             if (sub > 0) {
@@ -78,13 +80,13 @@ export default class PostContent extends React.Component {
               throw {};
             }
           } else {
-            item.startOffset -= node.length;
+            startOffset -= node.length;
           }
         } else {
           for(let i = 0 ; i < node.childNodes.length ; i++) {
             traverseNodes(node.childNodes[i]);
           }
-        }
+        }    
       }
 
       try{
@@ -92,7 +94,7 @@ export default class PostContent extends React.Component {
       } catch(e) {
 
       }
-      
+
       range.setStart(startNode, startOffset);
       if (endNode)
         range.setEnd(endNode, endOffset);
@@ -110,6 +112,7 @@ export default class PostContent extends React.Component {
     markup.className = 'post-highlight';
     markup.addEventListener('click', (e) => this.renderCommentBox(highlight));
     
+    if (! range) return;
     const selected = range.cloneContents();
     
     markup.appendChild(selected);
@@ -126,10 +129,6 @@ export default class PostContent extends React.Component {
     }
 
     this.hideCommentBox();
-  }
-
-  cancelHighlight () {
-    this.hideActionsMenu();
   }
 
   renderActionsMenu (bounding, range, highlight) {
@@ -151,36 +150,32 @@ export default class PostContent extends React.Component {
   }
 
   renderCommentBox (highlight) {
-    const style = {
-      opacity: 1,
-    };
-
-    this.setState({
-      ...this.state,
-      commentBoxStyle: style,
-      highlight: highlight || this.state.highlight
-    });
+    this.props.openCommentBox(highlight);
   }
 
   onClickComment (e) {
     const { range } = this.state;
 
     this.renderHighlight(range, this.state.highlight);
+    this.renderCommentBox(this.state.highlight);
 
-    this.renderCommentBox();
+    this.hideActionsMenu(false);
   }
 
-  hideActionsMenu () {
+  hideActionsMenu (hideCommentBox = true) {
     const style = {
       opacity: 0,
       display: 'none'
     };
-
+    
     this.setState({
       ...this.state,
       actionsStyle: style,
-      commentBoxStyle: style
     });
+
+    if (hideCommentBox) {
+      this.props.closeCommentBox();
+    }
   }
 
   hideCommentBox () {
@@ -235,27 +230,12 @@ export default class PostContent extends React.Component {
     this.renderActionsMenu(bounding, range, highlight);
   }
 
-  getCommentBox () {
-    return (
-      <CommentBox 
-          style={this.state.commentBoxStyle} 
-          highlight={this.state.highlight || {}}
-          showSave={true}
-          saveHighlight={(highlight) => this.saveHighlight(highlight)}
-          cancelHighlight={() => this.cancelHighlight()} />
-    );
-  }
-
-  getActionsMenu () {
-    return <ActionsMenu style={this.state.actionsStyle} onClickComment={(e) => this.onClickComment(e)} />;
-  }
-
   render () {
     return (
       <div className="post-content">
-        <PostText text={this.props.post.text} ref="content" onMouseUp={(e) => this.onMouseUp(e)} />
-        {this.getCommentBox()}
-        {this.getActionsMenu()}
+        <PostText post={this.props.post} ref="content" renderSavedHighlights={() => this.renderSavedHighlights()} onMouseUp={(e) => this.onMouseUp(e)} />
+        <CommentBox />
+        <ActionsMenu style={this.state.actionsStyle} onClickComment={(e) => this.onClickComment(e)} />
       </div>
     );
   } 

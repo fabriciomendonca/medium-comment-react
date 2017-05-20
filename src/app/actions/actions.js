@@ -3,6 +3,8 @@ import axios from 'axios';
 import {
   FETCH_POSTS,
   FETCH_POST,
+  OPEN_COMMENT_BOX,
+  CLOSE_COMMENT_BOX,
   SAVE_HIGHLIGHT,
   UPDATE_HIGHLIGHT
 } from './types';
@@ -28,6 +30,24 @@ export const fetchPost = (id) => {
     dispatch({
       type: FETCH_POST,
       payload: post.data
+    });
+  };
+};
+
+export const openCommentBox = (highlight) => {
+  return (dispatch) => {
+    dispatch({
+      type: OPEN_COMMENT_BOX,
+      payload: highlight
+    });
+  };
+};
+
+export const closeCommentBox = () => {
+  return (dispatch) => {
+    dispatch({
+      type: CLOSE_COMMENT_BOX,
+      payload: {}
     });
   };
 };

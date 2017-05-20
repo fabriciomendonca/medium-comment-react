@@ -6,12 +6,16 @@ class PostText extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.text !== this.props.text;
+    return nextProps.post.highlights.length !== this.props.post.highlights.length;
+  }
+
+  componentDidUpdate () {
+    this.props.renderSavedHighlights();
   }
 
   render () {
     return (
-      <div className="content-text" ref="contentText" onMouseUp={(e) => this.props.onMouseUp(e)} dangerouslySetInnerHTML={{__html: this.props.text}}>
+      <div id="contentText" key={new Date().getTime()} className="content-text" onMouseUp={(e) => this.props.onMouseUp(e)} dangerouslySetInnerHTML={{__html: this.props.post.text || ''}}>
       </div>
     );
   }

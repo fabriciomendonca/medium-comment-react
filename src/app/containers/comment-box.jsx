@@ -1,12 +1,16 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import image from '../../../assets/img/avatar-placeholder.png';
+import * as actionTyes from '../actions/types';
+import * as actions from '../actions/actions';
 
 class CommentBox extends React.Component {
   constructor (props) {
     super(props);
 
     this.state = {
-      comment: this.props.highlight.commentText || '',
+      comment: this.props.highlight ? this.props.highlight.commentText : '',
       disableSave: false
     }
   }
@@ -22,16 +26,15 @@ class CommentBox extends React.Component {
 
   saveHighlight () {
     this.props.highlight.commentText = this.state.comment;
-    this.props.saveHighlight(this.props.highlight);
-
-    this.setState({
-      ...this.state,
-      disableSave: true
-    })
+    if (this.props.highlight._id) {
+      this.props.updateHighlight(this.props.post, this.props.highlight);
+    } else {
+      this.props.saveHighlight(this.props.post, this.props.highlight);
+    }
   }
 
   cancelHighlight () {
-    this.props.cancelHighlight(this.props.highlight);
+    this.props.closeCommentBox();
   }
 
   onMouseOut (e) {
@@ -56,45 +59,47 @@ class CommentBox extends React.Component {
     });
   }
 
-  renderSave() {
-    if (this.props.showSave) {
-      return (
-        <button className="btn btn-raised btn-success" disabled={this.state.disableSave} type="button" onClick={() => this.saveHighlight()}>Save highlight</button>
-      );
-    }
-
-    return null;
-  }
-
   render () {
-    let show = (
-      <textarea value={this.state.comment} onChange={(e) => this.onChange(e)} placeholder="Insert a comment (optional)">
-      </textarea>
+    const {
+      action,
+      highlight
+    } = this.props;
+
+    const style = {
+      opacity: !action || action === actionTyes.CLOSE_COMMENT_BOX ? 0 : 1
+    };
+
+    let goto = (
+      <small><a href="#">view comment</a></small>
     );
 
-    if (this.props.disableSave) {
-      show = (
-        <div>Saving highlight...</div>
-      );
-    }
-
     return (
-      <div className="comment-box" style={this.props.style} onMouseOut={(e) => this.onMouseOut(e)}>
+      <div className="comment-box" style={style} onMouseOut={(e) => this.onMouseOut(e)}>
         <div className="box-content">
           <div className="user-info">
             <div className="avatar">
               <img src="/public/img/avatar-placeholder.png" alt=""/>
             </div>
           </div>
-          {show}
+          {highlight && highlight._id ? goto : ''}
+          <textarea value={this.state.comment} onChange={(e) => this.onChange(e)} placeholder="Insert a comment (optional)">
+          </textarea>
           <div className="btns">
-            {this.renderSave()}
+            <button className="btn btn-raised btn-success" type="button" onClick={() => this.saveHighlight()}>Save highlight</button>
             <button className="btn btn-raised btn-danger" type="button" onClick={() => this.cancelHighlight()}>Cancel</button>
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 
-export default CommentBox;
+const mapStateToProps = (state) => {
+  return {
+    highlight: state.highlight.highlight,
+    action: state.highlight.action,
+    post: state.posts.selected
+  };
+};
+
+export default withRouter(connect(mapStateToProps, actions)(CommentBox));

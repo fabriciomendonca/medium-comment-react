@@ -40,6 +40,8 @@ const config = {
     publicPath: '/'
   },
 
+  devtool: 'cheap-eval-source-map',
+
   module: {
     rules: [
       {

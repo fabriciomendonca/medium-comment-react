@@ -15,22 +15,6 @@ class Post extends React.Component {
     this.props.fetchPost(this.props.match.params.id);
   }
 
-  async updateHighlight(highlight) {
-    await this.props.updateHighlight(this.props.post, highlight);
-
-    // Force reload to mount the text ranges
-    // should be factored
-    document.location.reload();
-  }
-
-  async saveHighlight (highlight) {
-    await this.props.saveHighlight(this.props.post, highlight);
-
-    // Force reload to mount the text ranges
-    // should be refactored
-    document.location.reload();
-  }
-
   render () {
     const { post, highlightSaved, highlightUpdated } = this.props;
     if (!post) return (
@@ -43,6 +27,8 @@ class Post extends React.Component {
         <div>
           <PostContent 
             post={post}
+            openCommentBox={(highlight) => this.props.openCommentBox(highlight)}
+            closeCommentBox={() => this.props.closeCommentBox()}
             saveHighlight={(highlight) => this.saveHighlight(highlight)}
             updateHighlight={(highlight) => this.updateHighlight(highlight)} />
         </div>
