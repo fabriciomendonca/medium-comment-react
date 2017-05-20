@@ -1,9 +1,10 @@
 import React from 'react';
 
-export default (props) => {
-  return (
-    <span className="post-highlight" onMouseOver={(e) => props.renderCommentBox(e, props.highlight)}>
-      {props.text}
-    </span>
-  )
+export default class Highlight extends React.Component {
+  render () {
+    return (
+      <span className="post-highlight" ref="span" onClick={(e) => props.renderCommentBox(e, props.highlight)}>
+      </span>
+    )
+  }
 }

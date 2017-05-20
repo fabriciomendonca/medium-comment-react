@@ -1,0 +1,23 @@
+.actions-menu {
+  background: $petrol;
+  border-radius: 8px;
+  color: white;
+  padding: 8px 16px;
+  transition: 150ms linear all;
+  transform: translate(-50%, -120%);
+  .menu-content {
+    position: relative;
+    .menu-item {
+      cursor: pointer;
+      display: inline-block;
+    }
+    .caret {
+      bottom: -22px;
+      color: $petrol;
+      font-size: 1.5rem;
+      left: 50%;
+      position: absolute;
+      transform: translateX(-50%);
+    }
+  }
+}

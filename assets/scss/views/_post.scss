@@ -5,8 +5,20 @@
     margin-bottom: 24px;
   }
 
+  p {
+    margin: 16px 0;
+  }
+
   .post-highlight {
     background: $turquoise;
     color: white;
+
+    a {
+      color: white;
+    }
+  }
+
+  .highlights-hidden-container {
+    display: none;
   }
 }

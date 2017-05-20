@@ -1,37 +1,121 @@
 import React from 'react';
 
+import PostText from './post-text';
 import Highlight from './highlight';
 import CommentBox from './comment-box';
+import ActionsMenu from './actions-menu';
 
 export default class PostContent extends React.Component {
   constructor (props) {
     super(props);
 
-    this.state = {
-      post: this.props.post
-    };
+    this.initialPost = this.props.post;
 
-    this.renderCommentBox = this.renderCommentBox.bind(this);
-    this.removeCommentBox = this.removeCommentBox.bind(this);
-    this.saveHighlight = this.saveHighlight.bind(this);
-    this.cancelHighlight = this.cancelHighlight.bind(this);
+    this.state = {
+      actionsStyle: {
+        opacity: 0
+      },
+      commentBoxStyle: {
+        opacity: 0
+      },
+      ranges: this.props.ranges || []
+    };
   }
 
-  renderCommentBox (e, highlight) {
-    const bounding = e.target.getBoundingClientRect();
-    const posX = (bounding.left + (bounding.width / 2));
-    const posY = bounding.bottom;
-    const style = {
-      position: 'absolute',
-      opacity: '1',
-      top: posY + 'px',
-      left: posX + 'px'
-    };
-
-    this.setState({
-      ...this.state,
-      commentBox: <CommentBox style={style} onMouseOut={this.removeCommentBox} highlight={highlight} cancelHighlight={this.cancelHighlight} saveHighlight={this.saveHighlight} />
+  componentDidMount () {
+    // handle click outiside the content and close actions menu and comment box
+    window.addEventListener('click', (e) => {
+      if (e.target.className === 'app') {
+        this.hideActionsMenu();
+      }
     });
+
+    this.renderSavedHighlights();
+  }
+
+  renderSavedHighlights () {    
+    const {
+      highlights
+    } = this.props.post;
+
+    highlights.sort((a, b) => {
+      return a.startOffset >= b.startOffset
+    });
+
+    highlights.forEach(item => {
+      let range = document.createRange();
+      const elm = this.refs.content.refs.contentText;
+
+      let startNode,
+          startOffset,
+          endNode,
+          endOffset,
+          total = item.endOffset - item.startOffset + 1;
+      const traverseNodes = (node, offset) => {
+        if (node.nodeType === 3) {
+          const start = item.startOffset - node.length;
+          const sub = total - node.length;
+
+          // Found the start node
+          if (start < 0 && !startNode) {
+            startNode = node;
+            startOffset = node.length - (Math.abs(start));
+            total -= Math.abs(start);
+
+            if (total < 0) {
+              endNode = node;
+              endOffset = node.length - Math.abs(total);
+            }
+
+          } else if (startNode) {
+
+            if (sub > 0) {
+              total -= node.length;
+            } else if (total >= 0) {
+              endOffset = total;
+              endNode = node;
+              total = -1;
+              throw {};
+            }
+          } else {
+            item.startOffset -= node.length;
+          }
+        } else {
+          for(let i = 0 ; i < node.childNodes.length ; i++) {
+            traverseNodes(node.childNodes[i]);
+          }
+        }
+      }
+
+      try{
+        traverseNodes(elm);
+      } catch(e) {
+
+      }
+      
+      range.setStart(startNode, startOffset);
+      if (endNode)
+        range.setEnd(endNode, endOffset);
+
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+
+      this.renderHighlight(range, item);
+    });
+  }
+
+  renderHighlight(range, highlight) {
+    const markup = document.createElement('span');
+    markup.className = 'post-highlight';
+    markup.addEventListener('click', (e) => this.renderCommentBox(highlight));
+    
+    const selected = range.cloneContents();
+    
+    markup.appendChild(selected);
+    
+    range.deleteContents();
+    range.insertNode(markup);
   }
 
   saveHighlight (highlight) {
@@ -40,129 +124,138 @@ export default class PostContent extends React.Component {
     } else {
       this.props.saveHighlight(highlight);
     }
+
+    this.hideCommentBox();
   }
 
-  cancelHighlight (highlight) {
-    if (highlight._id) {
-      this.removeCommentBox();
-    } else {
-      let highlights = this.state.post.highlights;
-
-      highlights = [
-        ...highlights.slice(0, highlights.indexOf(highlight)),
-        ...highlights.slice(highlights.indexOf(highlight) + 1)
-      ];
-
-      this.removeCommentBox(null, highlights);
-    }
+  cancelHighlight () {
+    this.hideActionsMenu();
   }
 
-  removeCommentBox (e, highlights = null) {
-    const bounding = e ? e.target.getBoundingClientRect() : null;
-    const posX = bounding ? (bounding.left + (bounding.width / 2)) : 0;
-    const posY = bounding ? bounding.bottom : 0;
+  renderActionsMenu (bounding, range, highlight) {
+    const posX = bounding.left + (bounding.right - bounding.left) / 2;
+    const posY = bounding.top;
     const style = {
       position: 'absolute',
-      opacity: '0',
-      top: posY + 'px',
-      left: posX + 'px'
+      left: `${posX}px`,
+      top: `${posY}px`,
+      opacity: 1
     };
 
     this.setState({
       ...this.state,
-      commentBox: <CommentBox style={style} />,
-      post: {
-        ...this.state.post,
-        highlights: highlights || this.state.post.highlights
-      }
+      actionsStyle: style,
+      highlight,
+      range,
     });
   }
 
-  renderPostText () {
-    let {text} = this.state.post;
-    
-    if (text.length === 0) return '';
+  renderCommentBox (highlight) {
+    const style = {
+      opacity: 1,
+    };
 
-    let arrHighlights = [];
-    let offset = 0, left, center, right;
-
-    // Grab the highlights array than order it
-    let {highlights} = this.state.post;
-    highlights = highlights.sort((a, b) => {
-      return a.startIndex >= b.startIndex;
+    this.setState({
+      ...this.state,
+      commentBoxStyle: style,
+      highlight: highlight || this.state.highlight
     });
+  }
 
-    // Loop the highlights array and create the <Highlight /> Component
-    // Push the elements in a array in order to return it for the render method
-    this.state.post.highlights.forEach((highlight, index) => {
-      if (highlight.startIndex === highlight.endIndex) return;
-      
-      left = text.slice(offset, highlight.startIndex),
-      center = text.slice(highlight.startIndex, highlight.endIndex),
-      right = text.slice(highlight.endIndex);
-      
-      offset += left.length + center.length;
-      arrHighlights.push(left);
-      arrHighlights.push(<Highlight text={center} key={index} highlight={highlight} renderCommentBox={this.renderCommentBox} removeCommentBox={(e) => this.removeCommentBox(e, highlight)} />);
+  onClickComment (e) {
+    const { range } = this.state;
+
+    this.renderHighlight(range, this.state.highlight);
+
+    this.renderCommentBox();
+  }
+
+  hideActionsMenu () {
+    const style = {
+      opacity: 0,
+      display: 'none'
+    };
+
+    this.setState({
+      ...this.state,
+      actionsStyle: style,
+      commentBoxStyle: style
     });
+  }
 
-    // Push the remaining text
-    arrHighlights.push(right || text);
-    return arrHighlights;
+  hideCommentBox () {
+    const style = {
+      opacity: 0
+    };
+
+    this.setState({
+      ...this.state,
+      commentBoxStyle: style
+    });
   }
 
   onMouseUp(e) {
     const selection = window.getSelection();
-    
-    if (!selection.anchorNode) return;
-
-    const range = selection.getRangeAt(0).cloneRange();
     const str = selection.toString();
-    
-    // Get all the previous text to set the startIndex absolute
-    let prev = selection.anchorNode;
-    let prevText = prev.textContent.slice(0, selection.focusOffset);
-    prev = prev.previousSibling;
-    
-    if(!prev) return;
-    
-    do {
-      // Ignore comment nodes
-      if (prev.nodeType  && prev.nodeType !== 8 ) {
-        prevText = prev.textContent + prevText;
-      }
-      
-      prev = prev.previousSibling;
-    } while(prev);
 
-    // Clean the selection on previous text
-    prevText = prevText.replace(str, '');
-
-    const highlight = {
-      text: str,
-      startIndex: prevText.length,
-      endIndex: prevText.length + str.length
+    if (!selection.anchorNode || ! str.length) {
+      this.hideActionsMenu();
+      return;
     };
 
-    // Update the state
-    this.setState({
-      post: {
-        ...this.state.post,
-        highlights: [
-          ...this.state.post.highlights,
-          highlight
-        ]
-      }
-    });
+    const range = selection.getRangeAt(0);
+    
+    // skip when selection is changing paragraph
+    if (range.commonAncestorContainer.className === 'content-text' || 
+        range.startContainer.className === 'post-highlight' || 
+        range.endContainer.className === 'post-highight'
+    ) {
+      this.hideActionsMenu();
+      return ;
+    }
+
+    let p = e.currentTarget;
+    
+    const cloned = range.cloneRange();
+    cloned.selectNodeContents(p);
+    
+    cloned.setEnd(range.endContainer, range.endOffset);
+    const endOffset = cloned.toString().length;
+    cloned.setEnd(range.startContainer, range.startOffset);
+    const startOffset = cloned.toString().length;
+
+    const highlight = {
+      text: range.toString().trim(),
+      commentText: '',
+      startOffset,
+      endOffset
+    };
+    
+    const bounding = range.getBoundingClientRect();
+    this.renderActionsMenu(bounding, range, highlight);
+  }
+
+  getCommentBox () {
+    return (
+      <CommentBox 
+          style={this.state.commentBoxStyle} 
+          highlight={this.state.highlight || {}}
+          showSave={true}
+          saveHighlight={(highlight) => this.saveHighlight(highlight)}
+          cancelHighlight={() => this.cancelHighlight()} />
+    );
+  }
+
+  getActionsMenu () {
+    return <ActionsMenu style={this.state.actionsStyle} onClickComment={(e) => this.onClickComment(e)} />;
   }
 
   render () {
     return (
       <div className="post-content">
-        <div onMouseUp={(e) => this.onMouseUp(e)}>
-          {this.renderPostText()}
-        </div>
-        {this.state.commentBox || ''}
+        <PostText text={this.props.post.text} ref="content" onMouseUp={(e) => this.onMouseUp(e)} />
+        {this.getCommentBox()}
+        {this.getActionsMenu()}
       </div>
     );
   } 

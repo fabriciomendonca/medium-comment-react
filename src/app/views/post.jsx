@@ -15,16 +15,24 @@ class Post extends React.Component {
     this.props.fetchPost(this.props.match.params.id);
   }
 
-  updateHighlight(highlight) {
-    this.props.updateHighlight(this.props.post, highlight);
+  async updateHighlight(highlight) {
+    await this.props.updateHighlight(this.props.post, highlight);
+
+    // Force reload to mount the text ranges
+    // should be factored
+    document.location.reload();
   }
 
   saveHighlight (highlight) {
     this.props.saveHighlight(this.props.post, highlight);
+
+    // Force reload to mount the text ranges
+    // should be refactored
+    document.location.reload();
   }
 
   render () {
-    const { post } = this.props;
+    const { post, highlightSaved, highlightUpdated } = this.props;
     if (!post) return (
       <div>Loading post...</div>
     );
@@ -32,9 +40,9 @@ class Post extends React.Component {
     return (
       <div className="post">
         <h2>{post.title}</h2>
-        <div className="post-content">
+        <div>
           <PostContent 
-            post={post} 
+            post={post}
             saveHighlight={(highlight) => this.saveHighlight(highlight)}
             updateHighlight={(highlight) => this.updateHighlight(highlight)} />
         </div>
@@ -45,7 +53,7 @@ class Post extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    post: state.posts.selected
+    post: state.posts.selected,
   };
 };
 

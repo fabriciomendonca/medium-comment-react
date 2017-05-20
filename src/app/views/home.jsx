@@ -33,7 +33,6 @@ class Home extends React.Component {
     return (
       <div className="post" key={post._id}>
         <h2><Link to={`/posts/${post._id}`}>{post.title}</Link></h2>
-        <p>{post.text.slice(0, 60)}...</p>
       </div>
     )
   }

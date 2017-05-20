@@ -18,15 +18,17 @@ export default (state = [], action) => {
         selected: action.payload
       }
     case SAVE_HIGHLIGHT:
+      const list = [
+        ...state.selected.highlights,
+        action.payload
+      ];
+
       return {
         ...state,
         selected: {
           ...state.selected,
-          highlights: [
-            ...state.selected.highlights,
-            action.payload
-          ]
-        }
+          highlights: list
+        },
       };
     case UPDATE_HIGHLIGHT:
       const highlights = state.selected.highlights.filter(item => {
@@ -40,7 +42,7 @@ export default (state = [], action) => {
             ...highlights,
             action.payload
           ]
-        }
+        },
       };
   }
 
