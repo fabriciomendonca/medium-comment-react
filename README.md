@@ -72,12 +72,19 @@ Runs the tests using jest.
 npm test
 ```
 
-#### Watch the tests
+#### Watch the tests (Remote API)
 
 Watches the tests while creating them.
+
+##### Remote API
 
 ```
 npm run test:watch
 ```
 
+##### Local API
+
+```
+npm run local:test:watch
+```
 
