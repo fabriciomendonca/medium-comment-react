@@ -12,6 +12,7 @@ const PATHS = {
 };
 
 const VENDORS = ['react', 'react-dom', 'redux', 'redux-thunk', 'react-redux', 'react-router', 'react-router-dom', 'axios'];
+
 const config = {
   entry: {
     bundle: [
@@ -73,8 +74,16 @@ const config = {
       name: ['vendor', 'manifest']
     }),
 
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+    }),
+
+    new webpack.DefinePlugin({
+      'process.env.API_URL': JSON.stringify(process.env.API_URL || null)
+    })
   ]
-}
+};
 
 module.exports = config;

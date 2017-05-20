@@ -1,6 +1,6 @@
 # Medium comment
 
-This is a React + Redux app that implements a simple version of the Medium's text highlight and comment feature.
+This is a React + Redux app that uses the Javascript Range API to implements a simple version of the Medium's text highlight and comment feature.
 
 See the real deal
 https://hackernoon.com/how-it-feels-to-learn-javascript-in-2016-d3a717dd577f
@@ -46,8 +46,20 @@ npm run build
 
 Runs a local development server with webpack-dev-server.
 
+#### Remote API
+
+Uses the remote API hosted on Heroku
+
 ```
 npm run serve:dev
+```
+
+#### Local API
+
+Uses the API served from localhost. [See the porject](https://github.com/fabriciomendonca/medium-comment-api)
+
+```
+npm run local:dev
 ```
 
 ### Testing

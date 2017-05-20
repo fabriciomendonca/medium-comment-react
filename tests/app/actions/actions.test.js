@@ -17,7 +17,8 @@ import {
   fetchPosts,
   fetchPost,
   saveHighlight,
-  updateHighlight
+  updateHighlight,
+  API_URL
 } from '../../../src/app/actions/actions';
 
 describe('Test action creators', () => {
@@ -88,16 +89,17 @@ describe('Test action creators', () => {
       _id: '123456',
       highlights: [{
         text: 'is a new',
-        startIndex: 6,
-        endIndex: 13
+        startOffset: 6,
+        endOffset: 13
       }]
     };
     const highlight = {
       text: 'high',
-      startIndex: 0,
-      endIndex: 4
+      startOffset: 0,
+      endOffset: 4
     };
-    nock('http://localhost:3050')
+
+    nock(API_URL)
       .post(`/posts/${post._id}/highlights`, highlight)
       .reply(200, highlight);
     
@@ -124,7 +126,8 @@ describe('Test action creators', () => {
       startIndex: 0,
       endIndex: 4
     };
-    nock('http://localhost:3050')
+    
+    nock(API_URL)
       .patch(`/posts/${post._id}/highlights`, highlight)
       .reply(200, highlight);
     

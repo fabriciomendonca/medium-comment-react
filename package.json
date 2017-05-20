@@ -7,7 +7,9 @@
     "start": "node server.js",
     "build": "rm -rf dist && webpack -p",
     "serve:dev": "webpack-dev-server",
+    "local:dev": "export API_URL=http://localhost:3050 || export API_URL=http://localhost:3050 && npm run serve:dev",
     "test:watch": "npm run test -- --watch",
+    "local:test:watch": "export API_URL=http://localhost:3050 || export API_URL=http://localhost:3050 && npm run test:watch",
     "test": "jest"
   },
   "repository": {

@@ -7,7 +7,9 @@ import {
   UPDATE_HIGHLIGHT
 } from './types';
 
-const API_URL = 'https://boiling-mountain-65072.herokuapp.com';
+
+export const API_URL = process.env.API_URL || 'https://boiling-mountain-65072.herokuapp.com';
+
 export const fetchPosts = () => {
   return async (dispatch) => {
     const posts = await axios.get(`${API_URL}/posts`);
