@@ -31,6 +31,11 @@ class CommentBox extends React.Component {
     } else {
       this.props.saveHighlight(this.props.post, this.props.highlight);
     }
+
+    this.setState({
+      ...this.state,
+      disableSave: true
+    })
   }
 
   cancelHighlight () {
@@ -70,7 +75,7 @@ class CommentBox extends React.Component {
     };
 
     let goto = (
-      <small><a href="#">view comment</a></small>
+      <small><a href="#">view at comments list</a></small>
     );
 
     return (
@@ -82,10 +87,10 @@ class CommentBox extends React.Component {
             </div>
           </div>
           {highlight && highlight._id ? goto : ''}
-          <textarea value={this.state.comment} onChange={(e) => this.onChange(e)} placeholder="Insert a comment (optional)">
+          <textarea disabled={this.state.disableSave} value={this.state.comment} onChange={(e) => this.onChange(e)} placeholder="Insert a comment (optional)">
           </textarea>
           <div className="btns">
-            <button className="btn btn-raised btn-success" type="button" onClick={() => this.saveHighlight()}>Save highlight</button>
+            <button className="btn btn-raised btn-success" type="button" disabled={this.state.disableSave} onClick={() => this.saveHighlight()}>Save highlight</button>
             <button className="btn btn-raised btn-danger" type="button" onClick={() => this.cancelHighlight()}>Cancel</button>
           </div>
         </div>

@@ -4,6 +4,7 @@
   font-size: 0.875rem;
   height: 30px;
   line-height: 30px;
+  opacity: 1;
   padding: 0 16px;
 
   &.btn-raised {
@@ -20,5 +21,8 @@
     background: $cerise;
     color: white;
     text-transform: uppercase;
+  }
+  &[disabled="disabled"] {
+    opacity: 0.5;
   }
 }
