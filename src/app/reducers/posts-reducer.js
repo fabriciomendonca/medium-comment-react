@@ -9,12 +9,10 @@ export default (state = [], action) => {
   switch (action.type) {
     case FETCH_POSTS: 
       return { 
-        ...state,
         list: action.payload
       };
     case FETCH_POST: 
       return {
-        ...state,
         selected: action.payload
       }
     case SAVE_HIGHLIGHT:
@@ -24,7 +22,6 @@ export default (state = [], action) => {
       ];
 
       return {
-        ...state,
         selected: {
           ...state.selected,
           highlights: list
@@ -35,7 +32,6 @@ export default (state = [], action) => {
         return item._id !== action.payload._id;
       });
       return {
-        ...state,
         selected: {
           ...state.selected,
           highlights: [

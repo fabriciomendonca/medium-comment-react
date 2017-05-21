@@ -5,6 +5,7 @@ import { withRouter, Link } from 'react-router';
 import * as actions from '../actions/actions';
 
 import PostContent from '../components/post-content';
+import CommentsList from '../containers/comments-list';
 
 class Post extends React.Component {
   constructor (props) {
@@ -24,14 +25,14 @@ class Post extends React.Component {
     return (
       <div className="post">
         <h2>{post.title}</h2>
-        <div>
-          <PostContent 
-            post={post}
-            openCommentBox={(highlight) => this.props.openCommentBox(highlight)}
-            closeCommentBox={() => this.props.closeCommentBox()}
-            saveHighlight={(highlight) => this.saveHighlight(highlight)}
-            updateHighlight={(highlight) => this.updateHighlight(highlight)} />
-        </div>
+        <PostContent 
+          post={post}
+          openCommentBox={(highlight) => this.props.openCommentBox(highlight)}
+          closeCommentBox={() => this.props.closeCommentBox()}
+          saveHighlight={(highlight) => this.saveHighlight(highlight)}
+          updateHighlight={(highlight) => this.updateHighlight(highlight)} />
+        <h3>Comments</h3>
+        <CommentsList />
       </div>
     );
   }
