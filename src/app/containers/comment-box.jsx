@@ -15,7 +15,15 @@ class CommentBox extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidMount () {
+    window.addEventListener('scroll', () => {
+      this.setState({
+        ...this.state
+      });
+    });
+  }
+
+  componentWillReceiveProps (nextProps) {
     if (nextProps.highlight) {
       this.setState({
           comment: nextProps.highlight.commentText || '' ,
@@ -75,9 +83,12 @@ class CommentBox extends React.Component {
       top: `${50 + window.scrollY}px`,
     };
 
-    let goto = (
-      <small><a href="#">view at comments list</a></small>
-    );
+    let linkComment = '';
+    if (highlight && highlight._comment){
+      linkComment = (
+        <small><a href={`#${highlight? highlight._comment : ''}`}>view at comments list</a></small>
+      );
+    }
     const disabled = this.state.disableSave || (highlight && highlight._comment && this.state.comment.trim().length === 0)
     return (
       <div className="comment-box" style={style} onMouseOut={(e) => this.onMouseOut(e)}>
@@ -87,7 +98,7 @@ class CommentBox extends React.Component {
               <img src="/public/img/avatar-placeholder.png" alt=""/>
             </div>
           </div>
-          {highlight && highlight._id ? goto : ''}
+          {linkComment}
           <textarea disabled={this.state.disableSave} value={this.state.comment} onChange={(e) => this.onChange(e)} placeholder="Insert a comment (optional)">
           </textarea>
           <div className="btns">
