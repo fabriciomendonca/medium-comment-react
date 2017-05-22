@@ -13,14 +13,30 @@ class CommentBox extends React.Component {
       comment: this.props.highlight ? this.props.highlight.commentText : '',
       disableSave: false
     }
+
+    this.refreshScreen = this.refreshScreen.bind(this);
   }
 
   componentDidMount () {
-    window.addEventListener('scroll', () => {
-      this.setState({
-        ...this.state
-      });
-    });
+    window.removeEventListener('scroll', this.refreshScreen);
+    window.addEventListener('scroll', this.refreshScreen);
+  }
+
+  refreshScreen () {
+    if (this.refs.commentBox.style.opacity === '1') {
+      const { top } = this.refs.commentBox.style;
+      const { scrollY } = window;
+
+      if (Math.abs(parseInt(top) - scrollY) > 50) {
+        this.setState({
+          ...this.state
+        });
+      }
+    }
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('scroll', this.refreshScreen);
   }
 
   componentWillReceiveProps (nextProps) {
@@ -91,7 +107,7 @@ class CommentBox extends React.Component {
     }
     const disabled = this.state.disableSave || (highlight && highlight._comment && this.state.comment.trim().length === 0)
     return (
-      <div className="comment-box" style={style} onMouseOut={(e) => this.onMouseOut(e)}>
+      <div className="comment-box" ref="commentBox" style={style} onMouseOut={(e) => this.onMouseOut(e)}>
         <div className="box-content">
           <div className="user-info">
             <div className="avatar">
@@ -102,7 +118,7 @@ class CommentBox extends React.Component {
           <textarea disabled={this.state.disableSave} value={this.state.comment} onChange={(e) => this.onChange(e)} placeholder="Insert a comment (optional)">
           </textarea>
           <div className="btns">
-            <button className="btn btn-raised btn-success" type="button" disabled={disabled} onClick={() => this.saveHighlight()}>Save highlight</button>
+            <button className="btn btn-raised btn-success" ref="saveButton" type="button" disabled={disabled} onClick={() => this.saveHighlight()}>Save highlight</button>
             <button className="btn btn-raised btn-danger" type="button" onClick={() => this.cancelHighlight()}>Cancel</button>
           </div>
         </div>
