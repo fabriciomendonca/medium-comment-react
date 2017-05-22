@@ -42,8 +42,8 @@ describe('Test posts reducer', () => {
     const highlight = {
       _id: '2123312',
       text: 'hi',
-      startIndex: 0,
-      endIndex: 1
+      startOffset: 0,
+      endOffset: 1
     };
     
     const post = {
@@ -55,7 +55,9 @@ describe('Test posts reducer', () => {
 
     const action = {
       type: actionTypes.SAVE_HIGHLIGHT,
-      payload: highlight
+      payload: {
+        highlight: highlight,
+      }
     };
 
     expect(postsReducer({selected: post}, action)).toEqual({
@@ -70,8 +72,8 @@ describe('Test posts reducer', () => {
     const highlight = {
       _id: '2123312',
       text: 'hi',
-      startIndex: 0,
-      endIndex: 1,
+      startOffset: 0,
+      endOffset: 1,
       commentText: 'new text'
     };
     
@@ -79,12 +81,19 @@ describe('Test posts reducer', () => {
       _id: '123456',
       title: 'Post title',
       text: 'Post text',
-      highlights: []
+      highlights: [],
+    };
+
+    const comment = {
+      text: 'new text'
     };
 
     const action = {
       type: actionTypes.UPDATE_HIGHLIGHT,
-      payload: highlight
+      payload: {
+        highlight,
+        comment
+      }
     };
 
     expect(postsReducer({selected: post}, action)).toEqual({

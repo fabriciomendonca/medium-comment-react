@@ -38,7 +38,7 @@ export default (state = {}, action) => {
         selected: {
           ...state.selected,
           highlights
-        },
+        }
       };
   }
 
