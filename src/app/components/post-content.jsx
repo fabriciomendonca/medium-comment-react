@@ -137,7 +137,7 @@ export default class PostContent extends React.Component {
     const style = {
       position: 'absolute',
       left: `${posX}px`,
-      top: `${posY}px`,
+      top: `${posY + window.scrollY}px`,
       opacity: 1
     };
 

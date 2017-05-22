@@ -3,8 +3,11 @@
   border-radius: 8px;
   color: white;
   padding: 8px 16px;
+  position: absolute;
+  top: -100px;
   transition: 150ms linear all;
   transform: translate(-50%, -120%);
+
   .menu-content {
     position: relative;
     .menu-item {

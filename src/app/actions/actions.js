@@ -58,7 +58,10 @@ export const saveHighlight = (post, highlight) => {
     
     dispatch({
       type: SAVE_HIGHLIGHT,
-      payload: hl.data
+      payload: {
+        highlight: hl.data.highlight,
+        comment: hl.data.comment
+      }
     });
   };
 };
@@ -69,7 +72,10 @@ export const updateHighlight = (post, highlight) => {
 
     dispatch({
       type: UPDATE_HIGHLIGHT,
-      payload: hl.data
+      payload: {
+        highlight: hl.data.highlight,
+        comment: hl.data.comment
+      }
     });
   };
 };

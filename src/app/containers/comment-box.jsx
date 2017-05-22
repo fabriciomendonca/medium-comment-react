@@ -71,13 +71,14 @@ class CommentBox extends React.Component {
     } = this.props;
 
     const style = {
-      opacity: !action || action === actionTyes.CLOSE_COMMENT_BOX ? 0 : 1
+      opacity: !action || action === actionTyes.CLOSE_COMMENT_BOX ? 0 : 1,
+      top: `${50 + window.scrollY}px`,
     };
 
     let goto = (
       <small><a href="#">view at comments list</a></small>
     );
-
+    const disabled = this.state.disableSave || (highlight && highlight._comment && this.state.comment.trim().length === 0)
     return (
       <div className="comment-box" style={style} onMouseOut={(e) => this.onMouseOut(e)}>
         <div className="box-content">
@@ -90,7 +91,7 @@ class CommentBox extends React.Component {
           <textarea disabled={this.state.disableSave} value={this.state.comment} onChange={(e) => this.onChange(e)} placeholder="Insert a comment (optional)">
           </textarea>
           <div className="btns">
-            <button className="btn btn-raised btn-success" type="button" disabled={this.state.disableSave} onClick={() => this.saveHighlight()}>Save highlight</button>
+            <button className="btn btn-raised btn-success" type="button" disabled={disabled} onClick={() => this.saveHighlight()}>Save highlight</button>
             <button className="btn btn-raised btn-danger" type="button" onClick={() => this.cancelHighlight()}>Cancel</button>
           </div>
         </div>

@@ -5,7 +5,7 @@ import {
   UPDATE_HIGHLIGHT
 } from '../actions/types';
 
-export default (state = [], action) => {
+export default (state = {}, action) => {
   switch (action.type) {
     case FETCH_POSTS: 
       return { 
@@ -18,9 +18,8 @@ export default (state = [], action) => {
     case SAVE_HIGHLIGHT:
       const list = [
         ...state.selected.highlights,
-        action.payload
+        action.payload.highlight
       ];
-
       return {
         selected: {
           ...state.selected,
@@ -28,16 +27,17 @@ export default (state = [], action) => {
         },
       };
     case UPDATE_HIGHLIGHT:
-      const highlights = state.selected.highlights.filter(item => {
+      let highlights = state.selected.highlights.filter(item => {
         return item._id !== action.payload._id;
       });
+      highlights = [
+        ...highlights,
+        action.payload.highlight
+      ];
       return {
         selected: {
           ...state.selected,
-          highlights: [
-            ...highlights,
-            action.payload
-          ]
+          highlights
         },
       };
   }
