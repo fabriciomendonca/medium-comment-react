@@ -20,8 +20,8 @@ class Home extends React.Component {
         <h1>Medium comment</h1>
         <p>This app implements a simple version of the Medium's text highlight and comment feature.</p>
         <p>Select a post and start the demo.</p>
-        <p>Front end source code: <a href="#" target="_blank">https://github.com/fabriciomendonca/medium-comment-react</a></p>
-        <p>Back end source code: <a href="#" target="_blank">https://github.com/fabriciomendonca/medium-comment-api</a></p>
+        <p>Front end source code: <a href="https://github.com/fabriciomendonca/medium-comment-react" target="_blank">https://github.com/fabriciomendonca/medium-comment-react</a></p>
+        <p>Back end source code: <a href="https://github.com/fabriciomendonca/medium-comment-api" target="_blank">https://github.com/fabriciomendonca/medium-comment-api</a></p>
         <div className="posts">
           {this.props.posts ? this.props.posts.map(this.renderPosts) : 'Loading posts...'}
         </div>
