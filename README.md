@@ -8,7 +8,7 @@ https://hackernoon.com/how-it-feels-to-learn-javascript-in-2016-d3a717dd577f
 Demo
 https://boiling-beach-42579.herokuapp.com/
 
-The API is served from a Heroku hosted NodedJS + Exprexx + MongoDB RESTFul API.
+The API is served from a Heroku hosted NodedJS + Express + MongoDB RESTFul API.
 
 Back end project
 https://github.com/fabriciomendonca/medium-comment-api
